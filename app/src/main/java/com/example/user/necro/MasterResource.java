@@ -1,6 +1,9 @@
 package com.example.user.necro;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import static android.widget.Toast.*;
+import static java.lang.Boolean.TRUE;
 
 public class MasterResource extends AppCompatActivity {
     DatabaseHelper myDBResource;
@@ -27,28 +31,32 @@ public class MasterResource extends AppCompatActivity {
     ArrayList<String> arrayResource = new ArrayList<String>();
     ArrayAdapter<String> adapterResource;
     GridView gv;
+    FloatingActionButton fabAddRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master_resource);
         myDBResource = new DatabaseHelper(this);
-        editNameResource = (EditText) findViewById(R.id.editTextNameResource);
-        editMarkResource = (EditText) findViewById(R.id.editMarkResource);
-        editLoadResource = (EditText) findViewById(R.id.editLoadResource);
-        btnAddResource = (Button) findViewById(R.id.buttonAddResource);
-        btnViewResource = (Button) findViewById(R.id.buttonViewResource);
+        //editNameResource = (EditText) findViewById(R.id.editTextNameResource);
+        //editMarkResource = (EditText) findViewById(R.id.editMarkResource);
+        //editLoadResource = (EditText) findViewById(R.id.editLoadResource);
+        //btnAddResource = (Button) findViewById(R.id.buttonAddResource);
+        //btnViewResource = (Button) findViewById(R.id.buttonViewResource);
+        fabAddRes = (FloatingActionButton) findViewById(R.id.fabAddRes);
         gv = (GridView) findViewById(R.id.gridViewResource);
         registerForContextMenu(gv);
         btnRetrieve = (Button) findViewById(R.id.buttonRetrieve);
         adapterResource = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayResource);
-        addResource();
-        viewResource();
+        //addResource();
+        //viewResource();
         viewGridResource();
+        addbyFAB();
+        btnRetrieve.performClick();
 
     }
 
-    public void addResource() {
+/*    public void addResource() {
         btnAddResource.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -56,7 +64,7 @@ public class MasterResource extends AppCompatActivity {
                         boolean isInsertedResource = myDBResource.insertData(editNameResource.getText().toString().toUpperCase().trim()
                                 , editMarkResource.getText().toString(), editLoadResource.getText().toString());
                         if (isInsertedResource == true) {
-                            makeText(MasterResource.this, "Resource Inserted", LENGTH_LONG).show();
+                            makeText(MasterResource.this, R.string.str_res_inserted, LENGTH_LONG).show();
                             editNameResource.setText(null);
                             editLoadResource.setText(null);
                             editMarkResource.setText(null);
@@ -66,9 +74,48 @@ public class MasterResource extends AppCompatActivity {
                     }
                 }
         );
+    }*/
+
+    public void addbyFAB() {
+        fabAddRes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder resBuilder = new AlertDialog.Builder(MasterResource.this);
+                final View resView = getLayoutInflater().inflate(R.layout.add_res_lyt, null);
+                final EditText resName = (EditText) resView.findViewById(R.id.edit_res_name);
+                Button resBtnAdd = (Button) resView.findViewById(R.id.btnSaveRes);
+
+                resBtnAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!resName.getText().toString().isEmpty()) {
+                            boolean isInsertedResource = myDBResource.insertData(resName.getText().toString().toUpperCase().trim()
+                                    , "0", "0");
+                            if (isInsertedResource == true) {
+                                makeText(MasterResource.this, "Resource Inserted", LENGTH_LONG).show();
+                                resName.setText(null);
+                                btnRetrieve.performClick();
+
+                            } else {
+                                makeText(MasterResource.this, "Add Resource Failed", LENGTH_LONG).show();
+                            }
+                            //Intent intentOpenMasterResource = new Intent("com.example.user.necro.MasterResource");
+                            //startActivity(intentOpenMasterResource);
+                            resBuilder.setCancelable(TRUE);
+
+                        } else
+                            makeText(MasterResource.this, "Please input name", LENGTH_LONG).show();
+                    }
+                });
+                resBuilder.setView(resView);
+                AlertDialog dialog = resBuilder.create();
+                dialog.show();
+            }
+        });
+
     }
 
-    public void viewResource() {
+/*    public void viewResource() {
         btnViewResource.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -94,7 +141,7 @@ public class MasterResource extends AppCompatActivity {
                     }
                 }
         );
-    }
+    }*/
 
     // RETRIEVE
     public void viewGridResource() {
@@ -138,14 +185,6 @@ public class MasterResource extends AppCompatActivity {
                 return true;
             case R.id.delete_resource:
                 //CODE ADD HERE
-
-//                String namaDihapus = arrayResource.get(2);
-//                arrayResource.remove(2);
-//                adapterResource.notifyDataSetChanged();
-//                Toast.makeText(MasterResource.this, "Resource Deleted", Toast.LENGTH_LONG).show();
-
-//                Integer isDeletedResource = myDBResource.deleteData(adapterResource.getItem(0));
-//                String selectedResource = (gv.getItemAtPosition().toString());
 
                 Integer isDeletedResource = myDBResource.deleteData(arrayResource.get(infoResource.position));
                 if (isDeletedResource > 0) {

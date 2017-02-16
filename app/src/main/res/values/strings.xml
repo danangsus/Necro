@@ -9,4 +9,5 @@
     <string name="menu_resource_add">Add Resource</string>
     <string name="menu_resource_edit">Edit Resource</string>
     <string name="menu_resource_delete">Delete Resource</string>
+    <string name="str_res_inserted">Resource Inserted</string>
 </resources>
