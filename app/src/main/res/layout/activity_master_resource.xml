@@ -12,7 +12,7 @@
     tools:context="com.example.user.necro.MasterResource">
 
     <TextView
-        android:text="Master Resource"
+        android:text="Master Resources"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
